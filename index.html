@@ -6,8 +6,8 @@
     <title>ANPR Whitelist System</title>
     <style>
         @font-face {
-            font-family: 'Mandatory';
-            src: url('https://your-font-url/Mandatory.woff2') format('woff2');
+            font-family: 'UKNumberPlate';
+            src: url('UKNumberPlate.ttf') format('truetype');
         }
 
         body {
@@ -33,22 +33,34 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 300px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
         }
 
         .input-group {
             margin-bottom: 15px;
+            position: relative;
+        }
+
+        .input-group img {
+            width: 100%;
+            border-radius: 5px;
         }
 
         .input-group input {
-            width: 100%;
+            position: absolute;
+            top: 62%;
+            left: 15%;
+            width: 70%;
+            height: 10%;
             padding: 10px;
-            border: 1px solid #333;
+            border: none;
             border-radius: 5px;
             background-color: #ffcc00;
             color: #000;
-            font-family: 'Mandatory', Arial, sans-serif;
-            font-size: 1rem;
+            font-family: 'UKNumberPlate', Arial, sans-serif;
+            font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             text-align: center;
@@ -62,8 +74,9 @@
             background-color: #4CAF50; /* Green */
             color: #fff;
             cursor: pointer;
-            font-size: 0.875rem;
+            font-size: 1rem;
             transition: background-color 0.3s ease;
+            margin-top: 20px;
         }
 
         .input-group button:hover {
@@ -73,21 +86,22 @@
         .whitelist {
             list-style: none;
             padding: 0;
-            font-size: 0.875rem;
+            font-size: 1rem;
         }
 
         .whitelist-item {
-            background-color: #ffcc00;
+            background-color: #ffffff;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-family: 'Mandatory', Arial, sans-serif;
-            font-size: 1rem;
+            font-family: 'UKNumberPlate', Arial, sans-serif;
+            font-size: 1.5rem;
             letter-spacing: 0.1em;
             text-align: center;
+            color: #000;
         }
 
         .whitelist-item button {
@@ -96,7 +110,7 @@
             border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
-            font-size: 0.875rem;
+            font-size: 1rem;
             transition: background-color 0.3s ease;
         }
 
@@ -109,6 +123,7 @@
     <h1>ANPR Whitelist System</h1>
     <div class="container">
         <div class="input-group">
+            <img src="mnt/data/A_sporty_motor_vehicle_with_a_prominent_front_end_.png" alt="Sporty Motor Vehicle">
             <input type="text" id="regPlate" placeholder="Enter registration plate">
             <button onclick="addPlate()">Add to Whitelist</button>
         </div>
