@@ -75,12 +75,11 @@
             opacity: 1; /* Adjust input box transparency */
         }
 
-        .input-plate::after {
-            content: "ANPR 24Hr Access";
+        .manufacturer-text {
             position: absolute;
-            bottom: -10px; /* Adjust position as needed */
+            top: 50%; /* Adjust position as needed */
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, 150%); /* Adjust position as needed */
             font-size: 0.5rem; /* Adjust font size as needed */
             color: #000;
             font-family: Arial, sans-serif; /* Match the font */
@@ -185,8 +184,10 @@
         <div class="input-group">
             <img src="65A2C173-6093-44AC-95E2-C2B7D3163E87.webp" alt="Sporty Motor Vehicle">
             <input type="text" id="regPlate" class="input-plate" placeholder="Enter Reg" maxlength="7" oninput="adjustSpacing()">
+            <div class="manufacturer-text">ANPR 24Hr Access</div>
             <button onclick="addPlate()">Add to Whitelist</button>
         </div>
+
         <ul class="whitelist" id="whitelist">
             <!-- Whitelisted registration plates will appear here -->
         </ul>
