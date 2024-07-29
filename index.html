@@ -212,7 +212,7 @@
 
             .manufacturer-text {
                 font-size: 0.4rem;
-                bottom: 141px; /* Adjust position to fit within input box */
+                bottom: -10px; /* Adjust position to fit within input box */
             }
 
             .input-group img {
@@ -291,40 +291,45 @@
                     const whitelist = document.getElementById('whitelist');
                     whitelist.innerHTML = '';
                     data.forEach((plate, index) => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'whitelist-item';
-
-                        const plateDiv = document.createElement('div');
-                        plateDiv.className = 'plate';
-                        plateDiv.innerHTML = plate + '<div class="manufacturer">ANPR 24Hr Access</div>';
-
-                        const buttonsDiv = document.createElement('div');
-                        buttonsDiv.className = 'buttons';
-
-                        const editButton = document.createElement('button');
-                        editButton.className = 'edit';
-                        editButton.innerHTML = '<i class="fas fa-wrench"></i>';
-                        editButton.onclick = function() {
-                            document.getElementById('regPlate').value = plate.trim().slice(0, -16);
-                            editingIndex = index;
-                        };
-
-                        const removeButton = document.createElement('button');
-                        removeButton.className = 'remove';
-                        removeButton.innerHTML = '<i class="fas fa-trash"></i>';
-                        removeButton.onclick = function() {
-                            whitelist.removeChild(listItem);
-                            saveWhitelist();
-                        };
-
-                        buttonsDiv.appendChild(editButton);
-                        buttonsDiv.appendChild(removeButton);
-
-                        listItem.appendChild(plateDiv);
-                        listItem.appendChild(buttonsDiv);
-                        whitelist.appendChild(listItem);
+                        addPlateToDOM(plate, index);
                     });
                 });
+        }
+
+        function addPlateToDOM(plate, index) {
+            const whitelist = document.getElementById('whitelist');
+            const listItem = document.createElement('li');
+            listItem.className = 'whitelist-item';
+
+            const plateDiv = document.createElement('div');
+            plateDiv.className = 'plate';
+            plateDiv.innerHTML = plate + '<div class="manufacturer">ANPR 24Hr Access</div>';
+
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.className = 'buttons';
+
+            const editButton = document.createElement('button');
+            editButton.className = 'edit';
+            editButton.innerHTML = '<i class="fas fa-wrench"></i>';
+            editButton.onclick = function() {
+                document.getElementById('regPlate').value = plate.trim().slice(0, -16);
+                editingIndex = index;
+            };
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove';
+            removeButton.innerHTML = '<i class="fas fa-trash"></i>';
+            removeButton.onclick = function() {
+                whitelist.removeChild(listItem);
+                saveWhitelist();
+            };
+
+            buttonsDiv.appendChild(editButton);
+            buttonsDiv.appendChild(removeButton);
+
+            listItem.appendChild(plateDiv);
+            listItem.appendChild(buttonsDiv);
+            whitelist.appendChild(listItem);
         }
 
         function saveWhitelist() {
@@ -351,38 +356,7 @@
                     plateDiv.innerHTML = regPlate + '<div class="manufacturer">ANPR 24Hr Access</div>';
                     editingIndex = null;
                 } else {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'whitelist-item';
-
-                    const plateDiv = document.createElement('div');
-                    plateDiv.className = 'plate';
-                    plateDiv.innerHTML = regPlate + '<div class="manufacturer">ANPR 24Hr Access</div>';
-
-                    const buttonsDiv = document.createElement('div');
-                    buttonsDiv.className = 'buttons';
-
-                    const editButton = document.createElement('button');
-                    editButton.className = 'edit';
-                    editButton.innerHTML = '<i class="fas fa-wrench"></i>';
-                    editButton.onclick = function() {
-                        document.getElementById('regPlate').value = regPlate.trim();
-                        editingIndex = Array.from(whitelist.children).indexOf(listItem);
-                    };
-
-                    const removeButton = document.createElement('button');
-                    removeButton.className = 'remove';
-                    removeButton.innerHTML = '<i class="fas fa-trash"></i>';
-                    removeButton.onclick = function() {
-                        whitelist.removeChild(listItem);
-                        saveWhitelist();
-                    };
-
-                    buttonsDiv.appendChild(editButton);
-                    buttonsDiv.appendChild(removeButton);
-
-                    listItem.appendChild(plateDiv);
-                    listItem.appendChild(buttonsDiv);
-                    whitelist.appendChild(listItem);
+                    addPlateToDOM(regPlate, whitelist.children.length);
                 }
 
                 regPlateInput.value = '';
