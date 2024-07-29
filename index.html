@@ -150,7 +150,7 @@
             letter-spacing: 0;
             font-family: Arial, sans-serif;
             position: absolute;
-            bottom: 2px;
+            bottom: -12px;
             text-align: center;
         }
 
@@ -212,7 +212,7 @@
 
             .manufacturer-text {
                 font-size: 0.4rem;
-                bottom: -10px; /* Adjust position to fit within input box */
+                bottom: 141px; /* Adjust position to fit within input box */
             }
 
             .input-group img {
@@ -288,12 +288,14 @@
             fetch('/api/whitelist')
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Loaded whitelist:', data); // Debug log
                     const whitelist = document.getElementById('whitelist');
                     whitelist.innerHTML = '';
                     data.forEach((plate, index) => {
                         addPlateToDOM(plate, index);
                     });
-                });
+                })
+                .catch(error => console.error('Error loading whitelist:', error)); // Debug log
         }
 
         function addPlateToDOM(plate, index) {
@@ -340,7 +342,13 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ plates })
-            }).then(() => loadWhitelist());
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Saved whitelist:', data); // Debug log
+                loadWhitelist();
+            })
+            .catch(error => console.error('Error saving whitelist:', error)); // Debug log
         }
 
         function addPlate() {
