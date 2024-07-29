@@ -265,6 +265,8 @@
             console.log('Connected to MQTT broker');
         });
 
+        let editingIndex = null;
+
         function adjustSpacing() {
             const regPlateInput = document.getElementById('regPlate');
             const value = regPlateInput.value.toUpperCase().replace(/\s/g, ''); // Remove spaces
@@ -288,7 +290,7 @@
                 .then(data => {
                     const whitelist = document.getElementById('whitelist');
                     whitelist.innerHTML = '';
-                    data.forEach(plate => {
+                    data.forEach((plate, index) => {
                         const listItem = document.createElement('li');
                         listItem.className = 'whitelist-item';
 
@@ -304,8 +306,7 @@
                         editButton.innerHTML = '<i class="fas fa-wrench"></i>';
                         editButton.onclick = function() {
                             document.getElementById('regPlate').value = plate.trim().slice(0, -16);
-                            whitelist.removeChild(listItem);
-                            saveWhitelist();
+                            editingIndex = index;
                         };
 
                         const removeButton = document.createElement('button');
@@ -340,42 +341,51 @@
         function addPlate() {
             const regPlateInput = document.getElementById('regPlate');
             const regPlate = regPlateInput.value.trim().toUpperCase();
+
             if (regPlate) {
                 const whitelist = document.getElementById('whitelist');
-                const listItem = document.createElement('li');
-                listItem.className = 'whitelist-item';
 
-                const plateDiv = document.createElement('div');
-                plateDiv.className = 'plate';
-                plateDiv.innerHTML = regPlate + '<div class="manufacturer">ANPR 24Hr Access</div>';
+                if (editingIndex !== null) {
+                    const listItem = whitelist.children[editingIndex];
+                    const plateDiv = listItem.querySelector('.plate');
+                    plateDiv.innerHTML = regPlate + '<div class="manufacturer">ANPR 24Hr Access</div>';
+                    editingIndex = null;
+                } else {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'whitelist-item';
 
-                const buttonsDiv = document.createElement('div');
-                buttonsDiv.className = 'buttons';
+                    const plateDiv = document.createElement('div');
+                    plateDiv.className = 'plate';
+                    plateDiv.innerHTML = regPlate + '<div class="manufacturer">ANPR 24Hr Access</div>';
 
-                const editButton = document.createElement('button');
-                editButton.className = 'edit';
-                editButton.innerHTML = '<i class="fas fa-wrench"></i>';
-                editButton.onclick = function() {
-                    document.getElementById('regPlate').value = regPlate.trim();
-                    whitelist.removeChild(listItem);
-                    saveWhitelist();
-                };
+                    const buttonsDiv = document.createElement('div');
+                    buttonsDiv.className = 'buttons';
 
-                const removeButton = document.createElement('button');
-                removeButton.className = 'remove';
-                removeButton.innerHTML = '<i class="fas fa-trash"></i>';
-                removeButton.onclick = function() {
-                    whitelist.removeChild(listItem);
-                    saveWhitelist();
-                };
+                    const editButton = document.createElement('button');
+                    editButton.className = 'edit';
+                    editButton.innerHTML = '<i class="fas fa-wrench"></i>';
+                    editButton.onclick = function() {
+                        document.getElementById('regPlate').value = regPlate.trim();
+                        editingIndex = Array.from(whitelist.children).indexOf(listItem);
+                    };
 
-                buttonsDiv.appendChild(editButton);
-                buttonsDiv.appendChild(removeButton);
+                    const removeButton = document.createElement('button');
+                    removeButton.className = 'remove';
+                    removeButton.innerHTML = '<i class="fas fa-trash"></i>';
+                    removeButton.onclick = function() {
+                        whitelist.removeChild(listItem);
+                        saveWhitelist();
+                    };
 
-                listItem.appendChild(plateDiv);
-                listItem.appendChild(buttonsDiv);
-                whitelist.appendChild(listItem);
+                    buttonsDiv.appendChild(editButton);
+                    buttonsDiv.appendChild(removeButton);
 
+                    listItem.appendChild(plateDiv);
+                    listItem.appendChild(buttonsDiv);
+                    whitelist.appendChild(listItem);
+                }
+
+                regPlateInput.value = '';
                 saveWhitelist();
             }
         }
