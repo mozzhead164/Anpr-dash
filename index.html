@@ -27,7 +27,6 @@
             color: #ffffff;
             font-size: 1.5rem;
         }
-
         .container {
             background-color: #1e1e1e;
             padding: 20px;
@@ -60,7 +59,7 @@
             padding: 10px;
             border: none;
             border-radius: 5px;
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.65); /* Adjusted transparency */
             color: #000;
             font-family: 'UKNumberPlate', Arial, sans-serif;
             font-size: 2rem;
@@ -87,7 +86,6 @@
         .input-group button:hover {
             background-color: #45a049;
         }
-
         .whitelist {
             list-style: none;
             padding: 0;
@@ -125,7 +123,6 @@
             bottom: 2px;
             text-align: center;
         }
-
         .whitelist-item .buttons {
             display: flex;
             gap: 5px;
@@ -176,7 +173,6 @@
             <!-- Whitelisted registration plates will appear here -->
         </ul>
     </div>
-
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script>
         const client = mqtt.connect('ws://your-raspberry-pi-ip:port');
@@ -270,32 +266,33 @@
 
                 const editButton = document.createElement('button');
                 editButton.className = 'edit';
-                editButton.innerHTML = '<i class="fas fa-wrench">’;
+                editButton.innerHTML = '<i class="fas fa-wrench"></i>';
                 editButton.onclick = function() {
-                document.getElementById(‘regPlate’).value = regPlate.trim();
-                whitelist.removeChild(listItem);
-                saveWhitelist();
+                    document.getElementById('regPlate').value = regPlate.trim();
+                    whitelist.removeChild(listItem);
+                    saveWhitelist();
                 };
-            const removeButton = document.createElement('button');
-            removeButton.className = 'remove';
-            removeButton.innerHTML = '<i class="fas fa-trash"></i>';
-            removeButton.onclick = function() {
-                whitelist.removeChild(listItem);
+
+                const removeButton = document.createElement('button');
+                removeButton.className = 'remove';
+                removeButton.innerHTML = '<i class="fas fa-trash"></i>';
+                removeButton.onclick = function() {
+                    whitelist.removeChild(listItem);
+                    saveWhitelist();
+                };
+
+                buttonsDiv.appendChild(editButton);
+                buttonsDiv.appendChild(removeButton);
+
+                listItem.appendChild(plateDiv);
+                listItem.appendChild(buttonsDiv);
+                whitelist.appendChild(listItem);
+
                 saveWhitelist();
-            };
-
-            buttonsDiv.appendChild(editButton);
-            buttonsDiv.appendChild(removeButton);
-
-            listItem.appendChild(plateDiv);
-            listItem.appendChild(buttonsDiv);
-            whitelist.appendChild(listItem);
-
-            saveWhitelist();
+            }
         }
-    }
 
-    loadWhitelist();
-</script>
+        loadWhitelist();
+    </script>
 </body>
 </html>
