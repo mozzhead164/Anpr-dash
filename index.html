@@ -202,16 +202,17 @@
 
         function adjustSpacing() {
             const regPlateInput = document.getElementById('regPlate');
-            const value = regPlateInput.value.toUpperCase();
-            regPlateInput.value = value;
-
-            if (/^[A-Z]{2}[0-9]{2}[A-Z]{3}$/.test(value)) {
+            let value = regPlateInput.value.toUpperCase();
+            regPlateInput.value = value.replace(/\s/g, ''); // Remove any spaces
+        
+            if (value.length === 7) {
                 regPlateInput.style.letterSpacing = '0.1em';
                 regPlateInput.value = value.slice(0, 4) + ' ' + value.slice(4);
             } else {
                 regPlateInput.style.letterSpacing = '0.1em';
             }
         }
+
 
         function loadWhitelist() {
             fetch('/api/whitelist')
