@@ -52,27 +52,40 @@
             position: relative; /* Ensure the image stays centered */
             top: 50%; /* Center vertically */
             left: 50%; /* Center horizontally */
-            transform: translate(-50%, -50%) scale(1.1); /* Center and scale */
+            transform: translate(-50%, 0%) scale(1.1); /* Center and scale */
         }
 
-        .input-group input {
+        .input-plate {
             position: absolute;
-            top: 36%;
-            left: 38%;
-            width: 24%;
-            height: 10%;
-            padding: 4px;
+            top: 37.8%;
+            left: 36.9%;
+            width: 24.8%;
+            height: 10.6%;
+            padding: 7px;
             border: none;
             border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.65); /* Adjusted transparency */
+            background-color: rgba(255, 255, 255, 1); /* Adjusted transparency */
             color: #000;
             font-family: 'UKNumberPlate', Arial, sans-serif;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             text-align: center;
             font-weight: bold;
             opacity: 1; /* Adjust input box transparency */
+        }
+
+        .input-plate::after {
+            content: "ANPR 24Hr Access";
+            position: absolute;
+            bottom: -10px; /* Adjust position as needed */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5rem; /* Adjust font size as needed */
+            color: #000;
+            font-family: Arial, sans-serif; /* Match the font */
+            text-align: center;
+            white-space: nowrap;
         }
 
         .input-group button {
@@ -171,7 +184,7 @@
     <div class="container">
         <div class="input-group">
             <img src="65A2C173-6093-44AC-95E2-C2B7D3163E87.webp" alt="Sporty Motor Vehicle">
-            <input type="text" id="regPlate" placeholder="Enter Reg" maxlength="7" oninput="adjustSpacing()">
+            <input type="text" id="regPlate" class="input-plate" placeholder="Enter Reg" maxlength="7" oninput="adjustSpacing()">
             <button onclick="addPlate()">Add to Whitelist</button>
         </div>
         <ul class="whitelist" id="whitelist">
