@@ -77,7 +77,7 @@
 
         .manufacturer-text {
             position: absolute;
-            bottom: 5px; /* Adjust position as needed */
+            bottom: 2px; /* Adjust position as needed */
             left: 50%;
             transform: translateX(-50%);
             font-size: 0.8rem; /* Adjust font size as needed */
@@ -85,6 +85,7 @@
             font-family: Arial, sans-serif; /* Match the font */
             text-align: center;
             white-space: nowrap;
+            pointer-events: none; /* Ensure the text doesn't interfere with input */
         }
 
         .input-group button {
@@ -183,8 +184,10 @@
     <div class="container">
         <div class="input-group">
             <img src="65A2C173-6093-44AC-95E2-C2B7D3163E87.webp" alt="Sporty Motor Vehicle">
-            <input type="text" id="regPlate" class="input-plate" placeholder="Enter Reg" maxlength="7" oninput="adjustSpacing()">
-            <div class="manufacturer-text">ANPR 24Hr Access</div>
+            <div class="input-plate-wrapper">
+                <input type="text" id="regPlate" class="input-plate" placeholder="Enter Reg" maxlength="7" oninput="adjustSpacing()">
+                <div class="manufacturer-text">ANPR 24Hr Access</div>
+            </div>
             <button onclick="addPlate()">Add to Whitelist</button>
         </div>
 
@@ -202,17 +205,20 @@
 
         function adjustSpacing() {
             const regPlateInput = document.getElementById('regPlate');
-            let value = regPlateInput.value.toUpperCase();
-            regPlateInput.value = value.replace(/\s/g, ''); // Remove any spaces
-        
+            const value = regPlateInput.value.toUpperCase().replace(/\s/g, ''); // Remove spaces
+            regPlateInput.value = value; // Update the value
+
+            if (value.length > 7) {
+                regPlateInput.value = value.slice(0, 7); // Ensure max length is 7
+            }
+
             if (value.length === 7) {
                 regPlateInput.style.letterSpacing = '0.1em';
-                regPlateInput.value = value.slice(0, 4) + ' ' + value.slice(4);
+                regPlateInput.value = value.slice(0, 4) + ' ' + value.slice(4); // Add space for display
             } else {
                 regPlateInput.style.letterSpacing = '0.1em';
             }
         }
-
 
         function loadWhitelist() {
             fetch('/api/whitelist')
