@@ -266,6 +266,7 @@
         });
 
         let editingIndex = null;
+        let whitelistData = [];
 
         function adjustSpacing() {
             const regPlateInput = document.getElementById('regPlate');
@@ -289,13 +290,18 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Loaded whitelist:', data); // Debug log
-                    const whitelist = document.getElementById('whitelist');
-                    whitelist.innerHTML = '';
-                    data.forEach((plate, index) => {
-                        addPlateToDOM(plate, index);
-                    });
+                    whitelistData = data;
+                    displayWhitelist();
                 })
                 .catch(error => console.error('Error loading whitelist:', error)); // Debug log
+        }
+
+        function displayWhitelist() {
+            const whitelist = document.getElementById('whitelist');
+            whitelist.innerHTML = '';
+            whitelistData.forEach((plate, index) => {
+                addPlateToDOM(plate, index);
+            });
         }
 
         function addPlateToDOM(plate, index) {
@@ -322,7 +328,8 @@
             removeButton.className = 'remove';
             removeButton.innerHTML = '<i class="fas fa-trash"></i>';
             removeButton.onclick = function() {
-                whitelist.removeChild(listItem);
+                whitelistData.splice(index, 1);
+                displayWhitelist();
                 saveWhitelist();
             };
 
@@ -335,13 +342,10 @@
         }
 
         function saveWhitelist() {
-            const whitelistItems = document.querySelectorAll('.whitelist-item .plate');
-            const plates = Array.from(whitelistItems).map(item => item.textContent.trim().slice(0, -16));
-
             fetch('/api/whitelist', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ plates })
+                body: JSON.stringify({ plates: whitelistData })
             })
             .then(response => response.json())
             .then(data => {
@@ -356,18 +360,15 @@
             const regPlate = regPlateInput.value.trim().toUpperCase();
 
             if (regPlate) {
-                const whitelist = document.getElementById('whitelist');
-
                 if (editingIndex !== null) {
-                    const listItem = whitelist.children[editingIndex];
-                    const plateDiv = listItem.querySelector('.plate');
-                    plateDiv.innerHTML = regPlate + '<div class="manufacturer">ANPR 24Hr Access</div>';
+                    whitelistData[editingIndex] = regPlate;
                     editingIndex = null;
                 } else {
-                    addPlateToDOM(regPlate, whitelist.children.length);
+                    whitelistData.push(regPlate);
                 }
 
                 regPlateInput.value = '';
+                displayWhitelist();
                 saveWhitelist();
             }
         }
