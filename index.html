@@ -214,7 +214,7 @@
 
             .manufacturer-text {
                 font-size: 0.4rem;
-                bottom: -9px; /* Adjust position to fit within input box */
+                bottom: 141px; /* Adjust position to fit within input box */
             }
 
             .input-group img {
@@ -242,6 +242,7 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 <body>
     <h1>ANPR Whitelist System</h1>
@@ -259,15 +260,23 @@
             <!-- Whitelisted registration plates will appear here -->
         </ul>
     </div>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script>
         let editingIndex = null;
         let whitelistData = [];
 
-        const client = mqtt.connect('ws://your-raspberry-pi-ip:port');
+        const client = mqtt.connect('mqtt://192.168.1.232:1884');
 
         client.on('connect', function () {
             console.log('Connected to MQTT broker');
+            client.subscribe('whitelist/data');
+            loadWhitelist();
+        });
+
+        client.on('message', function (topic, message) {
+            if (topic === 'whitelist/data') {
+                whitelistData = JSON.parse(message.toString());
+                displayWhitelist();
+            }
         });
 
         function adjustSpacing() {
@@ -288,14 +297,7 @@
         }
 
         function loadWhitelist() {
-            fetch('/api/whitelist')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Loaded whitelist:', data); // Debug log
-                    whitelistData = data;
-                    displayWhitelist();
-                })
-                .catch(error => console.error('Error loading whitelist:', error)); // Debug log
+            client.publish('whitelist/get', '');
         }
 
         function displayWhitelist() {
@@ -344,17 +346,7 @@
         }
 
         function saveWhitelist() {
-            fetch('/api/whitelist', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ plates: whitelistData })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Saved whitelist:', data); // Debug log
-                loadWhitelist();
-            })
-            .catch(error => console.error('Error saving whitelist:', error)); // Debug log
+            client.publish('whitelist/set', JSON.stringify(whitelistData));
         }
 
         function addPlate() {
