@@ -259,14 +259,14 @@
     </div>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script>
+        let editingIndex = null;
+        let whitelistData = [];
+
         const client = mqtt.connect('ws://your-raspberry-pi-ip:port');
 
         client.on('connect', function () {
             console.log('Connected to MQTT broker');
         });
-
-        let editingIndex = null;
-        let whitelistData = [];
 
         function adjustSpacing() {
             const regPlateInput = document.getElementById('regPlate');
