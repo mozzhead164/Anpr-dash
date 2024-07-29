@@ -17,10 +17,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
             margin: 0;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-y: auto; /* Allow vertical scrolling */
+            min-height: 100vh;
+            padding-bottom: 50px; /* Allow for content growth */
         }
 
         h1 {
@@ -47,21 +48,20 @@
             width: 95%;
             border-radius: 35px;
             object-fit: cover;
-            object-position: center 0%; /* Adjust this value to move the image up or down */
             height: 300px;
-            transform-origin: center; /* Ensure the image scales from the center */
-            position: relative; /* Ensure the image stays centered */
-            top: 50%; /* Center vertically */
-            left: 50%; /* Center horizontally */
-            transform: translate(-50%, 0%) scale(1.1); /* Center and scale */
+            transform-origin: center;
+            position: relative;
+            top: 0; /* Ensure it stays within view */
+            left: 50%;
+            transform: translate(-50%, 0%) scale(1.1);
         }
 
         .input-plate-wrapper {
             position: absolute;
-            top: 37.8%;
-            left: 36.9%;
-            width: 24.8%;
-            height: 10.6%;
+            top: 34%; /* Adjust this for normal browser */
+            left: 37.1%; /* Adjust this for normal browser */
+            width: 26.9%; /* Adjust this for normal browser */
+            height: 14.2%; /* Adjust this for normal browser */
         }
 
         .input-plate {
@@ -70,7 +70,7 @@
             padding: 7px;
             border: none;
             border-radius: 5px;
-            background-color: rgba(255, 255, 255, 1); /* Adjusted transparency */
+            background-color: rgba(255, 255, 255, 1);
             color: #000;
             font-family: 'UKNumberPlate', Arial, sans-serif;
             font-size: 1.7rem;
@@ -78,25 +78,29 @@
             letter-spacing: 0.1em;
             text-align: center;
             font-weight: bold;
-            opacity: 1; /* Adjust input box transparency */
+            opacity: 1;
+            box-sizing: border-box; /* Include padding in width calculation */
         }
 
         .input-plate::placeholder {
-            font-size: 1.2rem; /* Adjust this value as needed */
+            font-size: 1.6rem;
             text-align: center;
+            color: #222;
+            white-space: nowrap; /* Prevent placeholder from wrapping */
         }
 
         .manufacturer-text {
             position: absolute;
-            bottom: -12px; /* Adjust position as needed */
+            bottom: 0px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.5rem; /* Adjust font size as needed */
-            color: #000;
-            font-family: Arial, sans-serif; /* Match the font */
+            font-size: 0.4rem;
+            color: #222;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
             text-align: center;
             white-space: nowrap;
-            pointer-events: none; /* Ensure the text doesn't interfere with input */
+            pointer-events: none;
         }
 
         .input-group button {
@@ -144,7 +148,7 @@
             align-items: center;
             font-weight: bold;
             position: relative;
-            width: 40%; /* Adjust this value as needed */
+            width: 40%;
         }
 
         .whitelist-item .plate .manufacturer {
@@ -172,8 +176,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 90px; /* Adjust this value as needed */
-            height: 50px; /* Adjust this value as needed */
+            width: 90px;
+            height: 50px;
         }
 
         .whitelist-item .buttons button.edit {
@@ -195,49 +199,50 @@
         /* Media Queries for Responsiveness */
         @media (max-width: 600px) {
             .input-plate-wrapper {
-                top: 33%;
-                left: 50%;
-                width: 27%;
-                height: 8%; /* Adjust height for better fit */
+                top: 32.4%; /* Adjust this for mobile browser */
+                left: 50.5%; /* Adjust this for mobile browser */
+                width: 29.5%; /* Adjust this for mobile browser */
+                height: 12%; /* Adjust this for mobile browser */
                 transform: translateX(-50%);
             }
 
             .input-plate {
-                font-size: 1.0rem;
-                padding: 5px; /* Adjust padding for better fit */
-                border-radius: 3px; /* Adjust border radius */
+                font-size: 0.95rem;
+                padding: 5px;
+                border-radius: 3px;
             }
 
             .input-plate::placeholder {
-                font-size: 0.9rem; /* Adjust placeholder text size */
+                font-size: 0.85rem;
+                font-weight: bold;
             }
 
             .manufacturer-text {
-                font-size: 0.4rem;
-                bottom: -12px; /* Adjust position to fit within input box */
+                font-size: 0.25rem;
+                bottom: 0px; /* Adjust this for mobile browser */
             }
 
             .input-group img {
                 height: 200px;
-                width: 90%; /* Adjust width for better scaling */
+                width: 90%;
             }
 
             .input-group button {
-                font-size: 0.8rem;
-                padding: 8px;
-                border-radius: 3px; /* Adjust border radius */
+                font-size: 1rem;
+                padding: 10px;
+                border-radius: 3px;
             }
 
             .whitelist-item .plate {
                 font-size: 1.6rem;
-                padding: 10px 5px; /* Adjust padding */
+                padding: 10px 5px;
                 width: 60%;
             }
 
             .whitelist-item .buttons button {
-                width: 55px;
-                height: 40px;
-                font-size: 0.8rem; /* Adjust font size */
+                width: 56px;
+                height: 48px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -254,6 +259,7 @@
                 <div class="manufacturer-text">ANPR 24Hr Access</div>
             </div>
             <button onclick="addPlate()">Add to Whitelist</button>
+            <div id="warning" style="color: red; display: none;">Plate is already in the whitelist!</div>
         </div>
 
         <ul class="whitelist" id="whitelist">
@@ -324,7 +330,7 @@
             editButton.className = 'edit';
             editButton.innerHTML = '<i class="fas fa-wrench"></i>';
             editButton.onclick = function() {
-                document.getElementById('regPlate').value = plate.trim().slice(0, -16);
+                document.getElementById('regPlate').value = plate.trim().slice(0, 4) + plate.trim().slice(5); // Remove space
                 editingIndex = index;
             };
 
@@ -352,8 +358,16 @@
         function addPlate() {
             const regPlateInput = document.getElementById('regPlate');
             const regPlate = regPlateInput.value.trim().toUpperCase();
+            const warning = document.getElementById('warning');
 
             if (regPlate) {
+                if (whitelistData.includes(regPlate)) {
+                    warning.style.display = 'block';
+                    return;
+                }
+
+                warning.style.display = 'none';
+
                 if (editingIndex !== null) {
                     whitelistData[editingIndex] = regPlate;
                     editingIndex = null;
